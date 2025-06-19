@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request, abort
 from app.models import Building
 from app.extensions import db
+from app.utils.decorators import token_required
+
 
 properties_bp = Blueprint('properties', __name__)
 
@@ -25,6 +27,7 @@ def get_property(property_id):
     })
 
 @properties_bp.route('/properties', methods=['POST'])
+@token_required
 def create_property():
     data = request.get_json()
 
@@ -53,6 +56,7 @@ def create_property():
     return jsonify({"message": "Property created", "id": new_property.id}), 201
 
 @properties_bp.route('/properties/<int:property_id>', methods=['PUT'])
+@token_required
 def update_property(property_id):
     property = Building.query.get(property_id)
     if not property:
