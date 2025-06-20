@@ -1,87 +1,87 @@
-from .extensions import db
-
-building_amenity = db.Table('building_amenity',
-    db.Column('building_id', db.Integer, db.ForeignKey('building.id'), primary_key=True),
-    db.Column('amenity_id', db.Integer, db.ForeignKey('amenity.id'), primary_key=True)
-)
-
-building_heating = db.Table('building_heating',
-    db.Column('building_id', db.Integer, db.ForeignKey('building.id'), primary_key=True),
-    db.Column('heating_id', db.Integer, db.ForeignKey('heating.id'), primary_key=True)
-)
-
-# Glavni modeli
-class Amenity(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-
-class Heating(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-
-class State(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-
-class City(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), nullable=False)
-    state = db.relationship('State', backref='cities')
-
-
-class CityPart(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    city_id = db.Column(db.Integer, db.ForeignKey('city.id'), nullable=False)
-    city = db.relationship('City', backref='city_parts')
-
-
-class EstateType(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-
-class Offer(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-
-class Building(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    square_footage = db.Column(db.Float)
-    construction_year = db.Column(db.Integer)
-    land_area = db.Column(db.Float)
-    registration = db.Column(db.Boolean)
-    rooms = db.Column(db.Integer)
-    bathrooms = db.Column(db.Integer)
-    parking = db.Column(db.Boolean)
-    price = db.Column(db.Float)
-
-    estate_type_id = db.Column(db.Integer, db.ForeignKey('estate_type.id'))
-    offer_id = db.Column(db.Integer, db.ForeignKey('offer.id'))
-    city_part_id = db.Column(db.Integer, db.ForeignKey('city_part.id'))
-
-    estate_type = db.relationship('EstateType', backref='buildings')
-    offer = db.relationship('Offer', backref='buildings')
-    city_part = db.relationship('CityPart', backref='buildings')
-
-    amenities = db.relationship('Amenity', secondary=building_amenity, backref='buildings')
-    heating_types = db.relationship('Heating', secondary=building_heating, backref='buildings')
-
-
-class BuildingFloor(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    building_id = db.Column(db.Integer, db.ForeignKey('building.id'), nullable=False)
-    floor_level = db.Column(db.Integer)
-    floor_total = db.Column(db.Integer)
-
-    building = db.relationship('Building', backref='floors')
+# from .extensions import db
 #
-# class User(db.Model):
+# building_amenity = db.Table('building_amenity',
+#     db.Column('building_id', db.Integer, db.ForeignKey('building.id'), primary_key=True),
+#     db.Column('amenity_id', db.Integer, db.ForeignKey('amenity.id'), primary_key=True)
+# )
+#
+# building_heating = db.Table('building_heating',
+#     db.Column('building_id', db.Integer, db.ForeignKey('building.id'), primary_key=True),
+#     db.Column('heating_id', db.Integer, db.ForeignKey('heating.id'), primary_key=True)
+# )
+#
+# # Glavni modeli
+# class Amenity(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(80), unique=True, nullable=False)
-#     password = db.Column(db.String(120), nullable=False)
+#     name = db.Column(db.String(100), nullable=False)
+#
+#
+# class Heating(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#
+#
+# class State(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#
+#
+# class City(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#     state_id = db.Column(db.Integer, db.ForeignKey('state.id'), nullable=False)
+#     state = db.relationship('State', backref='cities')
+#
+#
+# class CityPart(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#     city_id = db.Column(db.Integer, db.ForeignKey('city.id'), nullable=False)
+#     city = db.relationship('City', backref='city_parts')
+#
+#
+# class EstateType(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#
+#
+# class Offer(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#
+#
+# class Building(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     square_footage = db.Column(db.Float)
+#     construction_year = db.Column(db.Integer)
+#     land_area = db.Column(db.Float)
+#     registration = db.Column(db.Boolean)
+#     rooms = db.Column(db.Integer)
+#     bathrooms = db.Column(db.Integer)
+#     parking = db.Column(db.Boolean)
+#     price = db.Column(db.Float)
+#
+#     estate_type_id = db.Column(db.Integer, db.ForeignKey('estate_type.id'))
+#     offer_id = db.Column(db.Integer, db.ForeignKey('offer.id'))
+#     city_part_id = db.Column(db.Integer, db.ForeignKey('city_part.id'))
+#
+#     estate_type = db.relationship('EstateType', backref='buildings')
+#     offer = db.relationship('Offer', backref='buildings')
+#     city_part = db.relationship('CityPart', backref='buildings')
+#
+#     amenities = db.relationship('Amenity', secondary=building_amenity, backref='buildings')
+#     heating_types = db.relationship('Heating', secondary=building_heating, backref='buildings')
+#
+#
+# class BuildingFloor(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     building_id = db.Column(db.Integer, db.ForeignKey('building.id'), nullable=False)
+#     floor_level = db.Column(db.Integer)
+#     floor_total = db.Column(db.Integer)
+#
+#     building = db.relationship('Building', backref='floors')
+# #
+# # class User(db.Model):
+# #     id = db.Column(db.Integer, primary_key=True)
+# #     username = db.Column(db.String(80), unique=True, nullable=False)
+# #     password = db.Column(db.String(120), nullable=False)
